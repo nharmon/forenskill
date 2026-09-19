@@ -28,7 +28,7 @@ Clone the repo, then link or copy the skill folder into your skills directory.
 Symlink (a later `git pull` updates the installed skill):
 
 ```bash
-git clone https://github.com/<your-username>/forenskill.git
+git clone https://github.com/nharmon/forenskill.git
 mkdir -p ~/.claude/skills
 ln -s "$(pwd)/forenskill/skills/forenskill" ~/.claude/skills/forenskill
 ```
