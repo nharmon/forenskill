@@ -40,10 +40,31 @@ Bundled resources (paths relative to this skill's directory):
 `reference/commands.md` (command quick reference), `reference/sources.md`
 (standards), and `template.txt` (report template).
 
-Work in numeric phase order unless a phase says otherwise. Read
+Work in numeric phase order unless a phase says otherwise. Phases 12–15 are
+a loop, not a line: anything recovered in a later phase (a carved document,
+a password found in slack, a decrypted archive) re-enters Phases 12–14 for
+analysis. In `notes/exhibits.md`, record both the phase that *discovered* an
+item and the phase that *analyzed* it. Read
 [conventions.md](conventions.md) before starting Phase 0. After any context
 compaction or session resume, re-read this file, `conventions.md`, and the
 files in `notes/` before continuing.
+
+Read skill and phase files one at a time with the Read tool — not several
+concatenated through `cat`, which can truncate silently. If any output says
+it was truncated, re-read the missing range before continuing. A phase is
+"N/A" only after you have read its file and named the check that showed it
+doesn't apply (e.g. "`fls` shows no `Windows/System32/config`").
+
+At the end of every phase, append its results to the relevant `notes/` files
+before starting the next one (methodology, subject list, timeline,
+exhibits, anomalies). Do not batch note-taking for the end.
+
+Any script or one-off parser that produces a number, offset, or timestamp
+you report must be saved in `case_<id>/scripts/` before it is used, with the
+interpreter version and the script's hash logged in `methodology.md`, and
+described in the report as unvalidated unless it has been tested against a
+known-good tool. Hand-written parsers are a last resort — prefer Sleuth Kit
+primitives (`blkls`, `blkstat`, `ifind`, `icat -s`) where they cover the need.
 
 ---
 
@@ -83,7 +104,10 @@ files in `notes/` before continuing.
      your own working/output directory.
 8. **Every timestamp you report must carry its time zone / UTC offset.**
    Determine the source system's configured time zone early (Phase 4)
-   and normalize before building any timeline.
+   and normalize before building any timeline. More than one zone (and a
+   DST change) can apply within one device's history, and some sources
+   store local time with no zone at all (FAT, ZIP/DOS timestamps) — never
+   assume a tool's "UTC" label is correct for these (Phase 4).
 
 ---
 
@@ -99,6 +123,15 @@ Confirm you have, or ask the user for:
 - Any statement of legal authority/scope (warrant, consent, engagement
   letter) and any scope limitation (date range, specific user, specific
   allegation).
+- How to handle sensitive data in the report and whether any external
+  lookups are permitted. Recovered financial account/card numbers, SSNs,
+  and credentials may be the evidence, so whether to mask them (and where
+  full values live, e.g. exhibit files) depends on who will read the
+  report — ask, and record the answer in `notes/methodology.md`. Unless
+  told otherwise, make no external lookups (web searches, public
+  directories): nothing derived from the case (names, numbers, hashes,
+  content) is ever sent outside the examination environment. If a lookup is
+  approved, log the query, source, and date.
 - Where the case working directory should live (see layout below) —
   default to `case_<id>/` in the current working directory unless told
   otherwise. Never create it inside this skill's own directory: case data
@@ -131,6 +164,10 @@ case_<id>/
                                        # mirroring original paths
     carved/                            # orphaned carved items, named by
                                         # volume-relative byte offset
+    manifest.sha1                       # SHA1 of every exported/carved/
+                                         # decrypted item (update as you go)
+  scripts/                             # any script that produced a reported
+                                        # number (see above)
   report/
     findings_report.txt                  # final report, per template.txt
                                           # (Phase 19)
@@ -176,7 +213,7 @@ Read the file for each phase when you reach it.
 | 9 | Network, communication & cloud-sync artifacts — read each family present | [user-activity/browsers.md](user-activity/browsers.md), [email.md](user-activity/email.md), [chat.md](user-activity/chat.md), [cloud-sync.md](user-activity/cloud-sync.md) |
 | 10 | Virtual machine & container evidence | [virtualization.md](virtualization.md) |
 | 11 | Anti-forensics / counter-forensic indicators | [anti-forensics.md](anti-forensics.md) |
-| 12, 16 | Encrypted/protected volumes; password/encryption recovery attempts | [encryption.md](encryption.md) |
+| 12, 16 | Encrypted/protected volumes, files, and archives; password/encryption recovery attempts | [encryption.md](encryption.md) |
 | 13–14 | Document & image content analysis; photo EXIF/GPS geolocation | [content-analysis.md](content-analysis.md) |
 | 17–19 | Cross-correlation & timeline; exhibit tracking; report generation | [correlation-report.md](correlation-report.md), `template.txt` (read in full at Phase 19) |
 | — | Quick command reference | [reference/commands.md](reference/commands.md) |
