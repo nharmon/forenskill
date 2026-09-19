@@ -1,0 +1,26 @@
+# Case working directories created by the skill (evidence, notes, extracted
+# files, reports). Never commit case data.
+case/
+case_*/
+
+# Disk and memory images
+*.dd
+*.raw
+*.img
+*.E01
+*.E0[0-9]
+*.Ex01
+*.aff
+*.vmdk
+*.vhd
+*.vhdx
+*.qcow2
+*.mem
+*.vmem
+*.vmss
+*.lime
+
+# Editor / OS noise
+.DS_Store
+*.swp
+*~

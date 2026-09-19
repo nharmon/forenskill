@@ -1,0 +1,234 @@
+=============================================================================
+[CASE NAME/NUMBER] - FORENSIC EXAMINATION REPORT
+Evidence Item: [EVIDENCE ID] ([brief description of the physical item and
+               how/where it was obtained])
+Report Date: [YYYY-MM-DD]
+Examiner: [EXAMINER NAME]
+=============================================================================
+
+1. EVIDENCE SUMMARY & INTEGRITY
+-----------------------------------------------------------------------------
+Item examined:  [file name] - [format, e.g. raw/dd image, E01, physical
+                 device], [size in bytes] ([size in sectors/blocks if
+                 applicable]).
+
+Hashes computed on [file name] during this examination:
+  MD5:   [computed MD5]
+  SHA1:  [computed SHA1]
+
+[If a companion package or documented hash sheet was provided:]
+The accompanying [package name] was hash-verified against [hash sheet
+file name]:
+  MD5:   [computed MD5]   ([MATCH / MISMATCH - if mismatch, explain and
+                            do not proceed silently])
+  SHA1:  [computed SHA1]  ([MATCH / MISMATCH])
+Package integrity [CONFIRMED / NOT CONFIRMED - explain].
+
+2. EXAMINATION ENVIRONMENT & METHODOLOGY
+-----------------------------------------------------------------------------
+Platform: [OS/environment], examination performed against [a read-only
+copy / write-blocked original / etc.]; no writes were made to
+[evidence file] at any point.
+
+Tools used:
+  - [tool name v.version] - [what it was used for / which section].
+  - [tool name v.version] - [what it was used for / which section].
+  [... one line per tool, in the order first used ...]
+
+[Notable technique(s): describe, in enough detail to reproduce, any
+non-obvious method used - e.g. decrypting a volume without normally-
+required privileges, a custom carving/parsing approach, a password-
+recovery pipeline. State explicitly that the technique is non-destructive
+to the source evidence.]
+
+3. PARTITION / VOLUME LAYOUT
+-----------------------------------------------------------------------------
+  Slot  Start sector  End sector   Length (sectors)   Type
+  ----  ------------  ----------   -----------------  -------------------
+  [...one row per partition/volume, from the partition table tool...]
+
+  [Volume name/number]: [file system type], volume label [label]
+  ([approximate size]). OEM Name [OEM string, if any]. Volume ID
+  [volume serial/ID].
+
+  [Repeat one paragraph per volume. For any encrypted/protected volume,
+  note that here and point to the section below that covers it.]
+
+4. SUBJECT IDENTIFICATION SUMMARY
+-----------------------------------------------------------------------------
+[This section exists to surface, in one place, every name/alias, address,
+phone number, identifying number, and device/account identifier found
+anywhere in the examination, plus how they cross-link. Populate it LAST,
+after Sections 5 onward are complete, by pulling from the running list
+you kept per the examination checklist. If the case does not point to a
+specific individual, say so explicitly rather than omitting the section.]
+
+  Names/aliases identified:          [list, with source file/field for
+                                       each]
+  Associated account/device/computer
+    names:                           [list, with source]
+  Phone number(s):                   [list, noting which alias(es) each
+                                       appears with]
+  Address(es):                       [list, noting which alias(es)/
+                                       document(s) each appears with]
+  Other identifying details (DOB,
+    physical description, ID/cert
+    numbers, etc.):                  [list, with source]
+
+ASSESSMENT: [State your assessment of what these findings indicate about
+a single underlying identity, if any, and the confidence level. Clearly
+separate confirmed facts (e.g. "this phone number appears on both
+documents") from investigative theories (e.g. "this resembles a known
+public case/persona") - label theories as such and note how to verify
+them independently.]
+
+5. [VOLUME NAME] - FILE SYSTEM CONTENTS
+-----------------------------------------------------------------------------
+Recursive file listing obtained with [tool/command]. [If this
+examination also performs unallocated-space carving (Section 9), note
+here that offsets are given as volume-relative byte offsets - i.e. bytes
+from the start of this volume - rather than a tool-internal ID, so
+carved (nameless) items can be referenced the same way as named ones.]
+
+  Offset      Status    Path                                        Size (B)
+  ----------  --------  ------------------------------------------  --------
+  [...one row per item, allocated and deleted, from the file listing...]
+
+  [Footnote any special-case rows: volume-label entries with no data
+  clusters, zero-length stub entries with no real data location, etc. -
+  do not present a fabricated or rounded offset for these.]
+
+[Note here if unallocated-space carving (Section 9) recovers additional
+items with no directory entry at all, so the reader knows this listing
+is not necessarily the complete inventory of the volume.]
+
+[Repeat Section 5 (renumbering as needed) for each additional
+unencrypted volume.]
+
+6. [VOLUME NAME]: ENCRYPTION AND CONTENTS (only if an encrypted/protected
+   volume was found in Section 3 - omit this section otherwise)
+-----------------------------------------------------------------------------
+6.1 Pre-decryption metadata
+  Encryption:          [algorithm/product]
+  [Any timestamps, GUIDs, associated host/device name, or other metadata
+  readable without the password/key - list each with a label.]
+
+6.2 Decryption
+  [Describe exactly how a password/key was obtained or attempted:
+  - If found on the evidence itself: where (offset/file), how it was
+    found (method/tool), and how you verified it was the correct one
+    for this specific volume (e.g. matching an identifier/checksum)
+    before trusting it.
+  - The exact decryption method and tool(s) used.
+  If NOT decrypted, state that clearly and list what was attempted -
+  see Section 10 for the equivalent password-recovery record-keeping.]
+
+6.3 Decrypted volume contents
+  [Same format/expectations as Section 5 - file listing with offsets,
+  allocation status, sizes. Call out anything protected/encrypted WITHIN
+  this volume (e.g. a password-protected archive) for handling in
+  Section 10.]
+
+6.4 Significance
+  [Summarize what this volume's contents indicate, and why it was
+  encrypted/protected (if that intent is inferable) relative to the rest
+  of the evidence.]
+
+7. DOCUMENT & IMAGE ANALYSIS
+-----------------------------------------------------------------------------
+[One numbered subsection per document or related group of images. For
+each:]
+
+7.N [file name/path] - [one-line description]
+  [Transcribe or summarize the relevant content - names, numbers, dates,
+  addresses, anything evidentiary. Quote directly where useful; don't
+  paraphrase away specifics that matter.]
+  Metadata ([tool] v[version]): Author/Creator = [value] ([note if this
+    is confirmed complete/untruncated, not just a display artifact]);
+    Producer = [value]; Created/Modified = [timestamp WITH raw offset,
+    not a display-converted one].
+  [If the item appears fabricated/edited rather than a genuine
+  scan/photo: state the specific technical evidence for that conclusion
+  (editor tag, profile timestamp, structural anomaly, etc.).]
+  [Cross-reference: note any name/number/date here that also appears
+  elsewhere, linking back to Section 4/11.]
+
+[Include a subsection for reference/research material found alongside
+apparent forgeries or fraud preparation, noting it is not itself
+fraudulent but indicates what the subject was working from.]
+
+8. PHOTOS - EXIF / GPS GEOLOCATION ANALYSIS (only if applicable)
+-----------------------------------------------------------------------------
+[Device/software used to capture, if consistent across all photos.]
+
+  [path] - [DateTimeOriginal WITH raw offset]. GPS [lat,long in decimal
+    degrees] ([resolved real-world location] - [note if/how visually
+    confirmed against image content]).
+  [... one entry per photo ...]
+
+  Timeline: [narrative summary of where/when, and how it relates to
+  other dated events in the case.]
+
+  [Anomaly: note any internal inconsistency found (e.g. GPS date stamp
+  vs. capture time disagreeing beyond what timezone explains) and that
+  it should not be relied on without further corroboration.]
+
+9. UNALLOCATED-SPACE CARVING RESULTS
+-----------------------------------------------------------------------------
+[State the scan method (signature types searched) and scope (which
+volumes, full content vs. partial). If a second tool was used for
+corroboration, state exactly how much of each volume it completed -
+do not imply full corroboration if the corroborating scan did not
+actually finish.]
+
+9.N [Volume name] - [N] file(s) recovered with NO directory entry
+  (a) Volume-relative offset [0x........] - [file type/description]:
+        [Transcribe/summarize content as in Section 7, if applicable.]
+      Significance: [why this matters, and how it links to Section 4/11
+        findings.]
+  [... one lettered entry per orphaned item ...]
+
+  [If a scan found stray signature matches that turned out NOT to be
+  real files (coincidental byte patterns), say so explicitly with the
+  evidence that ruled them out (invalid structure, nonsensical parsed
+  metadata, etc.) rather than omitting the negative result.]
+
+10. [PROTECTED ARCHIVE/FILE NAME] PASSWORD RECOVERY (only if an
+    unresolved protected item remains - omit otherwise)
+-----------------------------------------------------------------------------
+[State the protection scheme and why this item is considered valuable.]
+
+Recovery attempts made, with outcome for each:
+  - [Method] - [candidate count/keyspace size] - [result: found /
+    exhausted-no-match / stopped early and why].
+  [... one line per method attempted ...]
+
+RECOMMENDATION: [assessment of what the negative results indicate about
+where the password likely comes from, and prioritized next steps.]
+
+11. ITEMS RECOVERED
+-----------------------------------------------------------------------------
+[Volume name] (allocated or deleted-but-intact):
+  [list of paths]
+
+[Volume name] (carved from unallocated space, no directory entry):
+  [list of descriptions with their volume-relative offsets]
+
+[... one group per volume ...]
+
+12. CONCLUSIONS & RECOMMENDED NEXT STEPS
+-----------------------------------------------------------------------------
+[One paragraph tying the findings together: what the evidence shows the
+subject was doing, how the cross-linked identifiers establish that it is
+one individual/scheme (or note if it doesn't), and what remains
+unresolved.]
+
+Recommended next steps, in priority order:
+  1. [Highest-value unresolved item first - typically an unrecovered
+     password/key, or identity confirmation.]
+  2. [...]
+  3. [...]
+
+=============================================================================
+END OF REPORT
+=============================================================================
