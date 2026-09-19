@@ -14,6 +14,10 @@
 - Note the examination platform/OS and confirm write-blocking or
   read-only mounting is in place (or that you are working from a raw file
   copy).
+- Record that the examination is being performed by an AI tool (Claude
+  Code), under whose direction, and that no human peer review has occurred
+  yet unless the user says otherwise. This goes in the report's header and
+  Limitations section — it affects how the report can be relied on.
 - Confirm the legal authority for the examination (warrant, consent
   form, corporate policy, etc.) and note any scope limitation it imposes
   (date range, user account, file type, specific allegation). Do not
@@ -55,15 +59,33 @@
 
 ## Phase 1 — Evidence Identification & Integrity
 
-```bash
-# Identify and size the image
-file evidence/image_copy/<image>
-ls -l evidence/image_copy/<image>
+Make the working copy first, and prove it is identical to the original:
 
-# Hash the image file itself — do this before any other command touches it
+```bash
+# 1. Hash the original (read-only use; record the path and time in hashes.txt)
+sha1sum <original_image> | tee -a evidence/hashes.txt
+md5sum  <original_image> | tee -a evidence/hashes.txt
+
+# 2. Copy it into the case directory and make the copy read-only
+cp --preserve=timestamps <original_image> evidence/image_copy/
+chmod a-w evidence/image_copy/<image>
+
+# 3. Hash the copy and compare against step 1 — a mismatch is a STOP (below)
 sha1sum evidence/image_copy/<image> | tee -a evidence/hashes.txt
 md5sum  evidence/image_copy/<image> | tee -a evidence/hashes.txt
+
+# 4. Only then identify and size the image
+file evidence/image_copy/<image>
+ls -l evidence/image_copy/<image>
 ```
+
+If the image is too large to duplicate, or you were handed only a copy, say
+so in `notes/methodology.md`, hash what you have, work from it read-only, and
+record what the hash does *not* establish (e.g. no original to compare
+against). If the source is a zip or other package, extract it to a scratch
+location and hash the extracted file; compute hashes directly on files rather
+than through complex pipelines, so a pipeline mistake can't masquerade as an
+integrity failure.
 
 - Record the exact file name, size (bytes), and format of the image
   (raw/dd, E01, AFF, etc.) being examined.

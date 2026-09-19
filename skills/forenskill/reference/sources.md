@@ -20,6 +20,8 @@ file and a cited source conflict, the published source governs.
   preservation of digital evidence.
 - **RFC 3227**, "Guidelines for Evidence Collection and Archiving" —
   order-of-volatility principle for live/volatile evidence (Phases 0, 8).
+- **Microsoft exFAT file system specification** — directory-entry layout,
+  including the per-timestamp UTC-offset fields (Phase 4 time handling).
 - **Microsoft and Apple platform documentation**, and established DFIR
   practitioner/vendor technical references (e.g. SANS DFIR courseware and
   posters, and widely-used open-source/commercial forensic tool

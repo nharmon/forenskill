@@ -3,7 +3,11 @@
 Evidence Item: [EVIDENCE ID] ([brief description of the physical item and
                how/where it was obtained])
 Report Date: [YYYY-MM-DD]
-Examiner: [EXAMINER NAME]
+Examiner: [EXAMINER NAME - if none was provided, write "Not provided -
+           requires review by a named human examiner"; never invent one]
+Performed by: [State that the examination was carried out by an AI tool
+           (Claude Code), under whose direction, and whether any human
+           peer review has occurred - see Section 13]
 =============================================================================
 
 1. EVIDENCE SUMMARY & INTEGRITY
@@ -30,10 +34,20 @@ Platform: [OS/environment], examination performed against [a read-only
 copy / write-blocked original / etc.]; no writes were made to
 [evidence file] at any point.
 
+Time handling: [Time zone(s) and UTC offsets applied to file-system and
+embedded timestamps, and how each was determined. For FAT-family media,
+give the stored offsets found and where they change; say which sources are
+zone-less. State that all times in this report are UTC unless marked
+otherwise.]
+
 Tools used:
   - [tool name v.version] - [what it was used for / which section].
   - [tool name v.version] - [what it was used for / which section].
   [... one line per tool, in the order first used ...]
+
+Custom scripts (if any): [name, purpose, interpreter version, SHA1, and the
+statement that the script is unvalidated unless tested against a known-good
+tool. Omit if none.]
 
 [Notable technique(s): describe, in enough detail to reproduce, any
 non-obvious method used - e.g. decrypting a volume without normally-
@@ -98,6 +112,14 @@ carved (nameless) items can be referenced the same way as named ones.]
   clusters, zero-length stub entries with no real data location, etc. -
   do not present a fabricated or rounded offset for these.]
 
+  File slack sweep: [result for this volume - number of files checked,
+  number with non-zero slack, and what was found in them; state a negative
+  result explicitly.]
+  Cluster ownership check: [allocated blocks with no owner and non-zero
+  unallocated blocks found or not found, and how each was resolved.]
+  Deleted-file export validation: [for each deleted item, whether its
+  content was intact, truncated, or overwritten.]
+
 [Note here if unallocated-space carving (Section 9) recovers additional
 items with no directory entry at all, so the reader knows this listing
 is not necessarily the complete inventory of the volume.]
@@ -105,9 +127,19 @@ is not necessarily the complete inventory of the volume.]
 [Repeat Section 5 (renumbering as needed) for each additional
 unencrypted volume.]
 
-6. [VOLUME NAME]: ENCRYPTION AND CONTENTS (only if an encrypted/protected
-   volume was found in Section 3 - omit this section otherwise)
+6. [VOLUME/ITEM NAME]: ENCRYPTION AND CONTENTS (only if an encrypted or
+   protected volume, file, or archive was found - omit this section
+   otherwise)
 -----------------------------------------------------------------------------
+[For protected files or archives rather than a whole volume, use the same
+subsections with "volume" read as "file/archive" (6.1 the protection scheme
+and what is readable without the password; 6.2 how each password was found
+or attempted and which candidate opened which item; 6.3 contents; 6.4
+significance). For key material found without its volume (e.g. a BitLocker
+recovery-key or .BEK file), describe it here as an investigative lead: the
+identifiers and timestamps it carries, and that the corresponding volume or
+device is not in the image.]
+
 6.1 Pre-decryption metadata
   Encryption:          [algorithm/product]
   [Any timestamps, GUIDs, associated host/device name, or other metadata
@@ -194,7 +226,9 @@ actually finish.]
   metadata, etc.) rather than omitting the negative result.]
 
 10. [PROTECTED ARCHIVE/FILE NAME] PASSWORD RECOVERY (only if an
-    unresolved protected item remains - omit otherwise)
+    unresolved protected item remains - omit otherwise; if every password
+    was found on the evidence, record that in Section 6.2 and omit this
+    section)
 -----------------------------------------------------------------------------
 [State the protection scheme and why this item is considered valuable.]
 
@@ -216,6 +250,12 @@ where the password likely comes from, and prioritized next steps.]
 
 [... one group per volume ...]
 
+Hash manifest: [Give the SHA1 of each item above, or state that they are
+listed in extracted/manifest.sha1 and include that file with the report.]
+[Sensitive-data handling: state how account/card numbers, credentials, and
+personal data are shown in this report (masked or in full) per the
+instruction given at intake, and where the full values are kept.]
+
 12. CONCLUSIONS & RECOMMENDED NEXT STEPS
 -----------------------------------------------------------------------------
 [One paragraph tying the findings together: what the evidence shows the
@@ -223,11 +263,34 @@ subject was doing, how the cross-linked identifiers establish that it is
 one individual/scheme (or note if it doesn't), and what remains
 unresolved.]
 
+Confidence: [For each principal conclusion, state High / Medium / Low and
+the basis (e.g. corroborated by two independent methods, single tool,
+unvalidated script, inference from metadata only).]
+
 Recommended next steps, in priority order:
   1. [Highest-value unresolved item first - typically an unrecovered
      password/key, or identity confirmation.]
   2. [...]
   3. [...]
+
+13. LIMITATIONS, ASSUMPTIONS & ANOMALIES
+-----------------------------------------------------------------------------
+Limitations and assumptions:
+  - [Provenance: whether an original was available to compare against,
+    whether a chain-of-custody record and acquisition log existed, and
+    whether HPA/DCO areas were addressed.]
+  - [Tool validation: which findings rest on a single tool or an unvalidated
+    script, and which were corroborated by an independent method.]
+  - [Review status: state that the examination was performed by an AI tool
+    and that no human peer review has been done, unless one has.]
+  - [External facts not verified (e.g. software release dates, routing-number
+    directories) and why (no lookups approved).]
+  - [Any part of the image not examined, scans that did not complete, or
+    tools that were unavailable.]
+
+Anomalies and unresolved items (one line each, with status "observed, not
+concluded" unless resolved):
+  - [Anomaly - evidence - status.]
 
 =============================================================================
 END OF REPORT

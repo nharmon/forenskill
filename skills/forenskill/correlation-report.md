@@ -23,7 +23,9 @@
 - Confirm `exhibits.md` is a running list of every item extracted for
   review, grouped by volume and by allocation status (allocated,
   deleted-but-intact, carved/orphaned), each with its path or offset
-  identifier.
+  identifier, and the phases that discovered and analyzed it.
+- Confirm `extracted/manifest.sha1` has a hash for every exported, carved,
+  and decrypted item, and that each still verifies (`sha1sum -c`).
 - Confirm the extracted-copy storage location is recorded, is separate
   from the original evidence, and does not modify it.
 
@@ -43,10 +45,20 @@
   output of the examination and should not be buried in narrative.
 - Confirm every timestamp states or implies its time zone/UTC offset
   (Phase 4) and that conversions were applied consistently.
-- If feasible, have a second examiner (technical/peer reviewer) check
-  key findings and methodology before finalizing — independent review is
-  standard practice for reducing single-examiner error and strengthens the
-  report's defensibility.
+- Recommend that a second examiner (technical/peer reviewer) check key
+  findings and methodology before the report is relied on — independent
+  review is standard practice for reducing single-examiner error and
+  strengthens the report's defensibility. You cannot perform this yourself:
+  the report must state that peer review has not been done. What you can do
+  is a self-review: re-derive each key count or offset by a second method
+  (a different tool, or the same question asked another way), re-run the
+  commands behind the reported hashes, sizes, and offsets, and list every
+  finding that rests on a single tool or an unvalidated script.
+- Where a report table is long (file listings, photo tables), generate it
+  from the parsed listing or CSV rather than typing it, so values aren't
+  transcribed by hand. Note that re-checking numbers against your own notes
+  only catches transcription errors — it does not re-verify the underlying
+  measurement.
 - Cut work-log-only content (blow-by-blow narration of failed attempts,
   tool debugging detail, session/environment quirks unrelated to the
   findings) from the report. Summarize outcomes; keep only the methodology
@@ -55,7 +67,9 @@
   the case materials) for the report's structure and write the
   report to `report/findings_report.txt`. Read the whole template first;
   its bracketed text is instructions to you, not report content — no
-  brackets or instruction text may remain in the finished report. Use
+  unfilled template placeholders or instruction text may remain in the
+  finished report. (Brackets you write as report content, such as a quoted
+  `[EXIF says …]` annotation in the timeline, are fine.) Use
   the mapping below. Only if no template exists, write
   `report/findings_report.md` with at least: Evidence Summary,
   Methodology, Subject Identification Summary, Findings by
@@ -76,13 +90,14 @@
 | 3 Partition / Volume Layout | Phase 3 |
 | 4 Subject Identification Summary | `notes/subject_id.md` — **write last**, after all other sections |
 | 5 File System Contents (one per volume) | Phase 6 listings; offsets are volume-relative bytes |
-| 6 Encrypted volume (if any) | Phases 12, 16 |
+| 6 Encrypted/protected volume, files, or archives (if any) | Phases 12, 16 |
 | 7 Document & Image Analysis | Phase 13 |
 | 8 Photos — EXIF/GPS (if any) | Phase 14 |
 | 9 Unallocated-Space Carving | Phase 15 |
 | 10 Password Recovery (only if unresolved) | Phase 16 |
 | 11 Items Recovered | Phase 18 / `notes/exhibits.md` |
 | 12 Conclusions & Next Steps | Phase 17 |
+| 13 Limitations, Assumptions & Anomalies | `notes/anomalies.md`; Phases 0–1 (no chain of custody, HPA/DCO unknown, no original), tool validation status (Phase 2), unverified external facts, peer-review status |
 
 ### Findings the template has no section for
 
@@ -91,9 +106,12 @@ anti-forensics, baseline, and timeline phases. Do not drop those findings
 and do not stretch an unrelated section to hold them. Add sections, in the
 template's own format (numbered heading, dashed rule, plain text):
 
-- **System baseline & time zone** (Phase 4): add to Section 2 or 3 —
-  OS/version, install date, configured time zone and UTC offset, clock
-  anomalies. Every later timestamp depends on this.
+- **System baseline & time zone** (Phase 4): the template's Section 2 has
+  a "Time handling" line for the zone(s) applied and how each was
+  determined (for FAT-family media, the stored offsets and where they
+  change). Add OS/version, install date, and clock anomalies to Section 2 or
+  3, or, for data-only media, the substitutes listed in Phase 4. Every later
+  timestamp depends on this.
 - **New numbered sections after Section 9**, one per phase that produced
   findings, omitting those with none: OS-specific artifacts (Phase 7),
   memory (Phase 8), network/communication/cloud (Phase 9), virtual
